@@ -1,6 +1,6 @@
-version: '3.8'
 
 services:
+  # 1. The Database (Stores Metadata & Pointers)
   database:
     image: postgres:15-alpine
     container_name: vdatabase
@@ -9,8 +9,31 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: postgres
     ports: 
-    - "5432:5432"
+      - "5432:5432"
     volumes:
-    - ./init-scripts:/docker-entrypoint-initdb.d
-    - ~/Desktop/aguploads:/var/www/cdn
-    
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. The Spring Boot API (Writes the Files)
+  backend:
+    build: . 
+    container_name: vbackend
+    ports:
+      - "8081:8081"
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      # Docker Networking: Use the service name 'database' as the host
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      # Tell Java where to write files inside the container
+      APP_FILE_STORAGE_PATH: /var/www/cdn
+    volumes:
+      # Map your Host Desktop -> Container Storage
+      - ~/Desktop/aguploads:/var/www/cdn

@@ -1,6 +1,6 @@
 WITH new_admin AS (
     INSERT INTO users (email, password_hash, is_active)
-    VALUES ('admin@kooick.com', 'argon2_hash_secure_x99', TRUE)
+    VALUES ('admin@kooick.com', '$2a$10$0rM6f.k3./y7w5w.y/x.9.H1.r.k/L2.O', TRUE)
     RETURNING user_id
 )
 INSERT INTO user_permissions (
@@ -19,7 +19,7 @@ FROM new_admin;
 
 WITH new_user AS (
     INSERT INTO users (email, password_hash, is_active)
-    VALUES ('renaldo.dev@kooick.com', 'argon2_hash_user_y22', TRUE)
+    VALUES ('renaldo.dev@kooick.com', '$2a$10$GRLdNghbhG68B.i.f/x.9.H1.r.k/L2.O', TRUE)
     RETURNING user_id
 )
 INSERT INTO user_permissions (
