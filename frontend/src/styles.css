@@ -1,1 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
+body{
+    background-color: #939393;
+}    
+.login-container { padding: 20px; max-width: 300px; border: 1px solid #ccc; }
+    .error-banner { background: #ffebee; color: #c62828; padding: 10px; margin-bottom: 15px; border-radius: 4px; }
+    div { margin-bottom: 15px; }
+    input { display: block; width: 100%; margin-top: 5px; }
+    button { cursor: pointer; }
+    button:disabled { background-color: #cccccc; cursor: not-allowed; }

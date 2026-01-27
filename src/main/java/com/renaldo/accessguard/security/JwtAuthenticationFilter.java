@@ -34,34 +34,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String userEmail;
-
-        // 1. Check if token is present
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        // 1. SKIP CORS PREFLIGHT requests explicitly
+        // (OPTIONS requests shouldn't trigger token logic)
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 2. Extract token
-        jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
+        final String userEmail;
 
-        // 3. If user is not authenticated yet, check DB
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                // 4. Log the user in for this request
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+        // 2. IF NO TOKEN, CONTINUE WITHOUT ERROR
+        // Do not throw 403 here! Just let the next filter handle it.
+        // The 'permitAll()' in SecurityConfig will allow the login path.
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
         filterChain.doFilter(request, response);
     }
