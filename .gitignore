@@ -31,5 +31,14 @@ build/
 
 ### VS Code ###
 .vscode/
-
+frontend/.vscode/
+frontend/node_modules/
+frontend/npm-debug.log
+frontend/yarn-error.log
 .DS_Store
+
+# Compiled output
+frontend/dist
+frontend/tmp
+fron/out-tsc
+frontend/bazel-out
