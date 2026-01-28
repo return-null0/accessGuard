@@ -85,29 +85,6 @@ Navigate to `http://localhost:4200`.
 3.  **Playback:** Click any video card to load it into the main player stage.
 4.  **Logout:** Click the "Sign Out" button in the sidebar to clear your session.
 
-## Project Structure
-
-```text
-accessguard/
-├── backend/
-│   ├── src/main/java/com/renaldo/accessguard/
-│   │   ├── config/          # Security & Web Config
-│   │   ├── controller/      # Auth & Video Controllers
-│   │   ├── model/           # User & Auth Entities
-│   │   ├── repository/      # JPA Repositories
-│   │   ├── security/        # JWT Filter & Service
-│   │   └── service/         # Business Logic
-│   └── Dockerfile
-├── frontend/
-│   ├── src/app/
-│   │   ├── auth.guard.ts        # Route Protection
-│   │   ├── auth.interceptor.ts  # Token Injection
-│   │   ├── video-dashboard/     # Main UI Component
-│   │   └── services/            # API Communication
-│   └── angular.json
-└── docker-compose.yml
-```
-
 ## Configuration
 
 **Video Path:**
