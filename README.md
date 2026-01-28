@@ -1,64 +1,109 @@
-# AccessGuard: Enterprise RBAC & Media Dashboard
+# AccessGuard
 
-AccessGuard is a robust Role-Based Access Control (RBAC) administration dashboard built to demonstrate secure enterprise patterns. It features granular permission management, JWT authentication, and a high-performance media delivery system.
-
-![Stack](https://img.shields.io/badge/stack-Angular%20%7C%20Spring%20Boot%20%7C%20PostgreSQL-green)
+> A secure, containerized video streaming platform featuring a modern Angular frontend, Spring Boot backend, and robust JWT authentication.
 
 
-## Features
+![Angular](https://img.shields.io/badge/frontend-Angular%2017-red)
+![Spring Boot](https://img.shields.io/badge/backend-Spring%20Boot%203-green)
+![Docker](https://img.shields.io/badge/deployment-Docker-blue)
+![Security](https://img.shields.io/badge/security-JWT-orange)
 
-* **Granular RBAC:** Distinct roles (`Admin`, `Editor`, `Viewer`) with specific permission bits (e.g., `can_delete_users`, `can_view_private_media`).
-* **Secure Media Management:** Upload, stream, and manage video assets with ownership tracking.
-* **JWT Authentication:** Stateless security with HTTP Interceptors for automatic token handling.
-* **Reactive UI:** Angular Signals and RxJS for real-time data handling.
-* **Dockerized:** Full stack (Frontend, Backend, Database) spins up with a single command.
+## Overview
+
+AccessGuard is a full-stack application designed to securely manage and stream video content from a local server to a web interface. It uses a **Stateless JWT architecture** to ensure secure access to API endpoints while serving media files efficiently through a protected resource handler.
+
+The system is fully containerized using Docker, mapping a local directory on your host machine to a virtual volume inside the backend container.
+
+## Key Features
+
+* **JWT Authentication:** Secure login system with stateless token management.
+* **Secure Media Streaming:** Streams video files directly from a protected host directory.
+* **Modern Dashboard:** "Dark Glass" aesthetic UI built with Angular, featuring video previews and an embedded player.
+* **Docker Integration:** Full stack (Frontend + Backend + DB) orchestration via Docker Compose.
+* **Role-Based Security:** Spring Security configuration with protected API routes and public media whitelisting.
+* **Interceptors:** Automatic HTTP interception to attach auth tokens to outgoing requests.
 
 ## Tech Stack
 
-* **Frontend:** Angular 17+ (Signals, Standalone Components), TailwindCSS
-* **Backend:** Spring Boot 3.2, Spring Security, Hibernate/JPA
-* **Database:** PostgreSQL 15 (Containerized)
-* **Infrastructure:** Docker Compose
+**Frontend**
+* **Framework:** Angular 17+ (Standalone Components)
+* **Styling:** CSS3 (Grid/Flexbox), Dark Mode Theme
+* **Routing:** Angular Router with Auth Guards
 
-## Quick Start
+**Backend**
+* **Core:** Spring Boot 3 (Java 17)
+* **Security:** Spring Security 6, JJWT
+* **Data:** H2 Database (In-Memory for Dev) / MySQL ready
+* **Build Tool:** Maven
 
-**Prerequisites:** Docker & Docker Compose.
+**Infrastructure**
+* Docker & Docker Compose
 
-1.  **Clone the repository**
-    ```bash
-    git clone [ ]( )
-    cd accessguard
-    ```
+## Getting Started
 
-2.  **Start the application**
-    ```bash
-    docker-compose up --build
-    ```
+### Prerequisites
+* Docker Desktop installed and running.
+* Node.js (v18+) & Angular CLI (for local frontend dev).
+* A folder on your Desktop named `aguploads` containing `.mp4` files to be mounted and served by Docker container.
 
-3.  **Access the Dashboard**
-    * Frontend: `http://localhost:4200`
-
-
-## Default Credentials
-
-The database is pre-seeded with the following accounts to demonstrate RBAC capabilities:
-
-| Role | Email | Password | Permissions |
-| :--- | :--- | :--- | :--- |
-| **Admin** | `admin@email.com` | `password` | Full System Access, User Management, Delete Any Media |
-| **Editor** | `renaldo.dev@email.com` | `password` | Upload Media, View Public Assets, No Delete Rights |
-
-## Demo Assets
-
-The system is pre-configured with the following high-quality media assets to demonstrate streaming performance and metadata parsing. These are from Google's commondatastorage subdomain, specifically for developer testing. 
-
-From `docker-compose.yml`
-```
-    volumes:
-    - ./init-scripts:/docker-entrypoint-initdb.d
-    - ~/Desktop/aguploads:/var/www/cdn
+### 1. Clone the Repository
+```bash
+git clone https://github.com/return-null0/accessguard.git
+cd accessguard
 ```
 
-* [Tears of Steel (1080p)](https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4)
+### 2. Configure the Backend (Docker)
+Ensure your `docker-compose.yml` maps your local video folder correctly.
+* **Mac/Linux:** `~/Desktop/aguploads:/var/www/cdn`
+* **Windows:** `C:/Users/YourName/Desktop/aguploads:/var/www/cdn`
 
-* [Big Buck Bunny (720p)](https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4)
+**Run the backend:**
+```bash
+docker-compose up -d --build
+```
+
+### 3. Run the Frontend
+You can run the frontend locally for development:
+```bash
+cd frontend
+npm install
+ng serve
+```
+Navigate to `http://localhost:4200`.
+
+## Usage
+
+1.  **Login:** Use the default admin credentials:
+    * **Email:** `admin@email.com`
+    * **Password:** `admin123`
+2.  **Dashboard:** Upon successful login, you will be redirected to the secure video library.
+3.  **Playback:** Click any video card to load it into the main player stage.
+4.  **Logout:** Click the "Sign Out" button in the sidebar to clear your session.
+
+## Project Structure
+
+```text
+accessguard/
+├── backend/
+│   ├── src/main/java/com/renaldo/accessguard/
+│   │   ├── config/          # Security & Web Config
+│   │   ├── controller/      # Auth & Video Controllers
+│   │   ├── model/           # User & Auth Entities
+│   │   ├── repository/      # JPA Repositories
+│   │   ├── security/        # JWT Filter & Service
+│   │   └── service/         # Business Logic
+│   └── Dockerfile
+├── frontend/
+│   ├── src/app/
+│   │   ├── auth.guard.ts        # Route Protection
+│   │   ├── auth.interceptor.ts  # Token Injection
+│   │   ├── video-dashboard/     # Main UI Component
+│   │   └── services/            # API Communication
+│   └── angular.json
+└── docker-compose.yml
+```
+
+## Configuration
+
+**Video Path:**
+To change where videos are stored, update `WebConfig.java` and your `docker-compose.yml` volume mapping.
