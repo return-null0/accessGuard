@@ -14,6 +14,11 @@ AccessGuard is a full-stack application designed to securely manage and stream v
 
 The system is fully containerized using Docker, mapping a local directory on your host machine to a virtual volume inside the backend container.
 
+<img src="./readme/image1.png" alt="drawing" width="900"/>
+<img src="./readme/image2.png" alt="drawing" width="900"/>
+<img src="./readme/image3.png" alt="drawing" width="900"/>
+
+
 ## Key Features
 
 * **JWT Authentication:** Secure login system with stateless token management.
@@ -27,13 +32,13 @@ The system is fully containerized using Docker, mapping a local directory on you
 
 **Frontend**
 * **Framework:** Angular 17+ (Standalone Components)
-* **Styling:** CSS3 (Grid/Flexbox), Dark Mode Theme
+* **Styling:** CSS3 
 * **Routing:** Angular Router with Auth Guards
 
 **Backend**
 * **Core:** Spring Boot 3 (Java 17)
 * **Security:** Spring Security 6, JJWT
-* **Data:** H2 Database (In-Memory for Dev) / MySQL ready
+* **Data:** Postgres Database Image; Production Ready
 * **Build Tool:** Maven
 
 **Infrastructure**

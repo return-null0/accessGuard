@@ -40,17 +40,17 @@ import { AuthService } from './auth.service'; // Import the service
   right: 0;
 position: absolute;
   margin-right: 60px;
-  margin-top: 200px;
+  margin-top: 20px;
     }
     .logout-btn:hover { background: #fecaca; }
   `]
 })
 export class MainLayoutComponent {
-  private authService = inject(AuthService); // Inject Service
-  private router = inject(Router);           // Inject Router
+  private authService = inject(AuthService); 
+  private router = inject(Router);           
 
   logout() {
-    this.authService.logout();      // 1. Clear token
-    this.router.navigate(['/login']); // 2. Redirect user
+    this.authService.logout();      
+    this.router.navigate(['/login']);
   }
 }
