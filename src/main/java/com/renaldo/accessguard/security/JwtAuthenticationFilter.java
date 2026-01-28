@@ -1,6 +1,5 @@
 package com.renaldo.accessguard.security;
 
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,24 +33,50 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // 1. SKIP CORS PREFLIGHT requests explicitly
-        // (OPTIONS requests shouldn't trigger token logic)
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userEmail;
 
-        // 2. IF NO TOKEN, CONTINUE WITHOUT ERROR
-        // Do not throw 403 here! Just let the next filter handle it.
-        // The 'permitAll()' in SecurityConfig will allow the login path.
+        // DEBUG LOG 1: Check what came in
+        System.out.println("--- JWT FILTER: Processing Request to " + request.getRequestURI() + " ---");
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("--- JWT FILTER: No Bearer header found. Passing to next filter. ---");
             filterChain.doFilter(request, response);
             return;
         }
+
+        jwt = authHeader.substring(7);
+        
+        try {
+             // DEBUG LOG 2: Try to extract email
+            userEmail = jwtService.extractUsername(jwt);
+            System.out.println("--- JWT FILTER: User Email Extracted: " + userEmail + " ---");
+
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+                
+                // DEBUG LOG 3: Checking validity
+                boolean isValid = jwtService.isTokenValid(jwt, userDetails);
+                System.out.println("--- JWT FILTER: Is Token Valid? " + isValid + " ---");
+
+                if (isValid) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    System.out.println("--- JWT FILTER: Authentication set in Context! ---");
+                }
+            }
+        } catch (Exception e) {
+            // DEBUG LOG 4: Catch specific errors (Expired, Malformed, etc.)
+            System.out.println("--- JWT FILTER ERROR: " + e.getMessage());
+            e.printStackTrace(); // Print full stack trace to console
+        }
+
         filterChain.doFilter(request, response);
     }
 }

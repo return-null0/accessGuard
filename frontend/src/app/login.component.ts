@@ -66,7 +66,7 @@ import { AuthService } from './auth.service';
     </div>
   `,
 
-  styleUrls: ['./login.component.css'] 
+  styleUrls: ['./app.component.css'] 
 })
 export class LoginComponent {
   loginForm: FormGroup;

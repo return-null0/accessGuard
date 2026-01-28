@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-body{
-    background-color: #939393;
+html{
+background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);;
 }    
 .login-container { padding: 20px; max-width: 300px; border: 1px solid #ccc; }
     .error-banner { background: #ffebee; color: #c62828; padding: 10px; margin-bottom: 15px; border-radius: 4px; }

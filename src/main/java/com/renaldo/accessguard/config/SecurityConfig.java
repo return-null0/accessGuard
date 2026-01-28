@@ -35,11 +35,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
-            // 1. Enable CORS with default customization (looks for a bean named corsConfigurationSource)
+            // Enable CORS with default customization (looks for a bean named corsConfigurationSource)
             .cors(Customizer.withDefaults()) 
 
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/files/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/videos/").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
@@ -61,13 +63,13 @@ public class SecurityConfig {
         // Allow all origins (using patterns allows credentials to be true)
         configuration.setAllowedOriginPatterns(List.of("*")); 
         
-        // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
+
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         
-        // Allow all headers (Authorization, Content-Type, etc.)
+
         configuration.setAllowedHeaders(List.of("*"));
         
-        // Allow credentials (cookies, authorization headers)
+
         configuration.setAllowCredentials(true); 
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -8,9 +8,7 @@ export const routes: Routes = [
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard], // Guard blocks this if no token
-    children: [
 
-    ]
   },
   { 
     path: 'login', 
