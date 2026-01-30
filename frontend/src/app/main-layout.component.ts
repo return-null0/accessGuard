@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet, Router } from '@angular/router';
 import { VideoDashboardComponent } from "./video-dashboard.component";
-import { AuthService } from './auth.service'; // Import the service
+import { AuthService } from './auth.service';
+import { AdminDashboardComponent } from "./admin-dashboard.component"; // Import the service
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, VideoDashboardComponent],
+  imports: [RouterOutlet, VideoDashboardComponent, AdminDashboardComponent],
   template: `
     
     <div class="sidebar">
@@ -14,15 +15,15 @@ import { AuthService } from './auth.service'; // Import the service
         Sign Out
       </button>
     </div>
-
     <app-video-dashboard></app-video-dashboard>    
+    <app-admin-dashboard></app-admin-dashboard>
     
     <div class="content">
       <router-outlet></router-outlet>
     </div>
   `,
   styles: [`
-.menu-spacer { flex: 1; } /* Pushes button to bottom */
+.menu-spacer { flex: 1; }
     
     .logout-btn {
       background: #fee2e2;

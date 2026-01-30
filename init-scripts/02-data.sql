@@ -29,7 +29,7 @@ INSERT INTO user_permissions (
     storage_limit_mb
 )
 SELECT 
-    user_id, 'editor', 
+    user_id, 'user', 
     FALSE, FALSE,        -- No Admin Ops
     TRUE, FALSE, FALSE,  -- Restricted Media Ops
     500                  -- 500MB Limit

@@ -25,5 +25,6 @@ public class User {
 
     public String getEmail() { return email; }
     public String getPassword() { return password; }
+    public Long getId() {return userId;}
     public boolean isActive() { return isActive; }
 }

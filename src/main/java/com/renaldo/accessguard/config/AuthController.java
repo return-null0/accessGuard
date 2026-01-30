@@ -1,6 +1,7 @@
 package com.renaldo.accessguard.config;
 
-
+import com.renaldo.accessguard.entity.User;
+import com.renaldo.accessguard.repository.UserRepository;
 import com.renaldo.accessguard.security.JwtService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,30 +20,35 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
+    private final UserRepository userRepository; 
 
     public AuthController(AuthenticationManager authenticationManager, 
                           UserDetailsService userDetailsService,
-                          JwtService jwtService) {
+                          JwtService jwtService,
+                          UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest request) {
-        // This will throw exception if password is wrong
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
 
-        // Fetch User to generate token
-        final UserDetails user = userDetailsService.loadUserByUsername(request.email());
-        final String jwt = jwtService.generateToken(user);
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(request.email());
+        final String jwt = jwtService.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        User user = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return ResponseEntity.ok(new AuthenticationResponse(jwt, user.getId()));
     }
 }
 
-// DTOs (Data Transfer Objects) - Can be in separate files or inner records
+
 record LoginRequest(String email, String password) {}
-record AuthenticationResponse(String token) {}
+
+record AuthenticationResponse(String token, Long userId) {}

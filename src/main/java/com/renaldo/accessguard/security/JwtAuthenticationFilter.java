@@ -37,7 +37,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String userEmail;
 
-        // DEBUG LOG 1: Check what came in
         System.out.println("--- JWT FILTER: Processing Request to " + request.getRequestURI() + " ---");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -47,16 +46,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         jwt = authHeader.substring(7);
-        
+
         try {
-             // DEBUG LOG 2: Try to extract email
+
             userEmail = jwtService.extractUsername(jwt);
             System.out.println("--- JWT FILTER: User Email Extracted: " + userEmail + " ---");
 
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-                
-                // DEBUG LOG 3: Checking validity
+
                 boolean isValid = jwtService.isTokenValid(jwt, userDetails);
                 System.out.println("--- JWT FILTER: Is Token Valid? " + isValid + " ---");
 
@@ -72,9 +70,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            // DEBUG LOG 4: Catch specific errors (Expired, Malformed, etc.)
+
             System.out.println("--- JWT FILTER ERROR: " + e.getMessage());
-            e.printStackTrace(); // Print full stack trace to console
+            e.printStackTrace(); 
+
         }
 
         filterChain.doFilter(request, response);
