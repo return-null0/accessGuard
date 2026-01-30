@@ -20,7 +20,7 @@ The system is fully containerized using Docker, mapping a local directory on you
 <img src="./readme/image4.png" alt="drawing" width="500"/>
 <img src="./readme/image5.png" alt="drawing" width="500"/>
 
-
+-----
 ## Key Features
 
 * **JWT Authentication:** Secure login system with stateless token management.
@@ -33,13 +33,15 @@ The system is fully containerized using Docker, mapping a local directory on you
 ## Tech Stack
 
 **Frontend**
-* **Framework:** Angular 17+ (Standalone Components)
+* **Framework:** Angular 17+ (Standalone Components, Signals)
+* **State Management:** RxJS (BehaviorSubjects)
 * **Styling:** CSS3 
-* **Routing:** Angular Router with Auth Guards
+* **Routing:** Angular Router with Role-Based Auth Guards
 
 **Backend**
 * **Core:** Spring Boot 3 (Java 17)
 * **Security:** Spring Security 6, JJWT
+* **File Handling:** Multipart File Uploads & Resource Handlers
 * **Data:** Postgres Database Image; Production Ready
 * **Build Tool:** Maven
 
@@ -47,7 +49,7 @@ The system is fully containerized using Docker, mapping a local directory on you
 * Docker & Docker Compose
 
 ## Getting Started
-
+------
 ### Prerequisites
 * Docker Desktop installed and running.
 * Node.js (v18+) & Angular CLI (for local frontend dev).
@@ -77,18 +79,40 @@ npm install
 ng serve
 ```
 Navigate to `http://localhost:4200`.
-
+-----
 ## Usage
 
 1.  **Login:** Use the admin credentials or default user:
+    ## Admin
     * **Email:** `admin@email.com`
     * **Password:** `admin123`
+
+    ## User
     * **Email:** `renaldo.dev@email.com`
     * **Password:** `password`
 2.  **Dashboard:** Upon successful login, you will be redirected to the secure video library.
 3.  **Playback:** Click any video card to load it into the main player stage.
 4.  **Logout:** Click the "Sign Out" button in the sidebar to clear your session.
 
+--------
+## Dashboards
+
+**Video Library (All Users):**
+
+- Upon login, users are redirected to the secure video library.
+
+- Click any video card to load it into the main player stage.
+
+**Admin Console (Admins Only):**
+
+- Admins will see an "Admin Console" section (or navigation item).
+
+- Upload: Select a local .mp4 file and click "Upload". The video will immediately appear in the gallery.
+
+- Delete: Click the trash icon on any video item to permanently remove it from the server.
+
+- Logout: Click the "Sign Out" button to clear your session and token.
+------
 ## Configuration
 
 **Video Path:**
