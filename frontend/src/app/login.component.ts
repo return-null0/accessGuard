@@ -15,7 +15,7 @@ import { AuthService } from './auth.service';
         <div class="brand-header">
           <div class="logo-icon">🛡️</div>
           <h1>AccessGuard</h1>
-          <p class="subtitle">Secure Gateway</p>
+
         </div>
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
