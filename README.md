@@ -14,9 +14,11 @@ AccessGuard is a full-stack application designed to securely manage and stream v
 
 The system is fully containerized using Docker, mapping a local directory on your host machine to a virtual volume inside the backend container.
 
-<img src="./readme/image1.png" alt="drawing" width="900"/>
-<img src="./readme/image2.png" alt="drawing" width="900"/>
-<img src="./readme/image3.png" alt="drawing" width="900"/>
+<img src="./readme/image1.png" alt="drawing" width="500"/>
+<img src="./readme/image2.png" alt="drawing" width="500"/>
+<img src="./readme/image3.png" alt="drawing" width="500"/>
+<img src="./readme/image4.png" alt="drawing" width="500"/>
+<img src="./readme/image5.png" alt="drawing" width="500"/>
 
 
 ## Key Features
@@ -78,9 +80,11 @@ Navigate to `http://localhost:4200`.
 
 ## Usage
 
-1.  **Login:** Use the default admin credentials:
+1.  **Login:** Use the admin credentials or default user:
     * **Email:** `admin@email.com`
     * **Password:** `admin123`
+    * **Email:** `renaldo.dev@email.com`
+    * **Password:** `password`
 2.  **Dashboard:** Upon successful login, you will be redirected to the secure video library.
 3.  **Playback:** Click any video card to load it into the main player stage.
 4.  **Logout:** Click the "Sign Out" button in the sidebar to clear your session.

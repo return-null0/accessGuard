@@ -38,7 +38,8 @@ public class VideoController {
                 .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('admin')")
+    @CrossOrigin(origins = "http://localhost:4200") 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadVideo(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
@@ -54,7 +55,7 @@ public class VideoController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{filename}")
     public ResponseEntity<String> deleteVideo(@PathVariable String filename) {
         File file = new File(VIDEO_DIRECTORY + File.separator + filename);

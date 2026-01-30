@@ -1,91 +1,108 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './auth.service';
-import { BehaviorSubject, Observable, catchError, of, switchMap, tap } from 'rxjs';
+import { VideoService } from './video.service';
+import { catchError, of, tap } from 'rxjs';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="container">
-      <header>
-        <h2>CDN (Admin)</h2>
-        <button *ngIf="auth.isAdmin()" (click)="auth.logout()" class="logout-btn">
-          Logout
-        </button>
+    <div class="dashboard-container">
+      <header class="dashboard-header">
+        <div class="brand">
+          <h2>Admin Console</h2>
+        </div>
+        <div class="user-badge" *ngIf="auth.isAdmin()">
+          <span class="role-tag">ADMINISTRATOR</span>
+        </div>
       </header>
     
-      <div *ngIf="auth.isAdmin(); else accessDenied">
+      <div *ngIf="auth.isAdmin(); else accessDenied" class="main-content">
         
-        <div class="admin-panel">
-          <h3>Upload Manager</h3>
-          <input type="file" (change)="onFileSelected($event)" #fileInput>
-          <button (click)="onUpload()" [disabled]="!selectedFile">
-            Upload Video
-          </button>
-        </div>
-
-        <div class="video-list">
-          <h3>File Registry</h3>
+        <section class="card upload-card">
+          <div class="card-header">
+            <h3>Upload Manager</h3>
+            <p class="subtitle">Select a video file to publish to the CDN</p>
+          </div>
           
-          <div *ngFor="let videoUrl of videos$ | async" class="video-item">
-            <span class="filename">{{ getFilename(videoUrl) }}</span>
-            <div class="actions">
-              <button (click)="onDelete(videoUrl)" class="delete-btn">
-                Delete
-              </button>
+          <div class="upload-controls">
+            <div class="file-input-wrapper">
+              <input type="file" (change)="onFileSelected($event)" #fileInput id="file-upload" class="hidden-input">
+              <label for="file-upload" class="file-label">
+                <span class="folder-icon">📂</span>
+                <span *ngIf="!selectedFile">Choose File...</span>
+                <span *ngIf="selectedFile" class="selected-name">{{ selectedFile.name }}</span>
+              </label>
+            </div>
+
+            <button (click)="onUpload()" 
+                    [disabled]="!selectedFile" 
+                    class="btn btn-primary">
+              <span class="icon">☁️</span> Upload Video
+            </button>
+          </div>
+        </section>
+
+        <section class="card list-card">
+          <div class="card-header">
+            <h3>Files</h3>
+            <div class="badge-count" *ngIf="(videoService.videos$ | async) as list">
+              {{ list.length }} Items
             </div>
           </div>
           
-          <div *ngIf="(videos$ | async)?.length === 0" class="empty-state">
-            No videos found on server.
+          <div class="video-list">
+            <div class="list-header-row">
+              <span>Filename</span>
+              <span>Actions</span>
+            </div>
+
+            <div *ngFor="let videoUrl of videoService.videos$ | async" class="video-item">
+              <div class="file-info">
+                <span class="file-icon">🎬</span>
+                <span class="filename" title="{{ videoUrl }}">{{ getFilename(videoUrl) }}</span>
+              </div>
+              
+              <div class="actions">
+                <a [href]="videoUrl" target="_blank" class="btn-icon view" title="View">▶️</a>
+                <button (click)="onDelete(videoUrl)" class="btn-icon delete" title="Delete">🗑️</button>
+              </div>
+            </div>
+            
+            <div *ngIf="(videoService.videos$ | async)?.length === 0" class="empty-state">
+              <div class="empty-icon">📭</div>
+              <p>No media files found on the server.</p>
+            </div>
           </div>
-        </div>
+        </section>
 
       </div>
 
       <ng-template #accessDenied>
-        <div class="error-msg">
-          <h3>Access Denied</h3>
-          <p>You do not have permission to manage these files.</p>
+        <div class="access-denied-wrapper">
+          <div class="error-card">
+            <div class="lock-icon">🔒</div>
+            <h3>Access Restricted</h3>
+            <p>Your account permissions do not authorize access to the media management console.</p>
+            <button class="btn btn-outline" (click)="logout()">Return to Login</button>
+          </div>
         </div>
       </ng-template>
     </div>
   `,
-  styles: [`
-    .container { padding: 20px; font-family: sans-serif; max-width: 800px; margin: 0 auto; }
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    
-    .admin-panel { border: 1px solid #4caf50; padding: 20px; margin-bottom: 30px; background: #f9fdf9; border-radius: 8px; }
-    .logout-btn { background: #555; color: white; border: none; padding: 8px 16px; cursor: pointer; border-radius: 4px; }
-    
-    .video-item { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; align-items: center; }
-    .filename { font-family: monospace; font-size: 1.1em; color: #333; }
-    
-    .delete-btn { background: #f44336; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; }
-    .delete-btn:hover { background: #d32f2f; }
-    
-    .empty-state { padding: 30px; text-align: center; color: #888; font-style: italic; background: #fafafa; border-radius: 8px; }
-    .error-msg { text-align: center; color: #d32f2f; margin-top: 50px; }
-  `]
+  styleUrl: "./videoAdmindashboards.css"
 })
 export class AdminDashboardComponent {
   public auth = inject(AuthService);
+  public videoService = inject(VideoService);
+  private router = inject(Router);  
+
+  @ViewChild('fileInput') fileInput!: ElementRef;
   selectedFile: File | null = null;
-
-  // Trigger for refreshing the list
-  private refreshTrigger$ = new BehaviorSubject<void>(undefined);
-
-  // The video list stream
-  videos$: Observable<string[]> = this.refreshTrigger$.pipe(
-    switchMap(() => this.auth.getVideos().pipe(
-      catchError(err => {
-        console.error('Error loading videos:', err);
-        return of([]); 
-      })
-    ))
-  );
 
   onFileSelected(event: any) {
     if (event.target.files.length > 0) {
@@ -96,14 +113,11 @@ export class AdminDashboardComponent {
   onUpload() {
     if (!this.selectedFile) return;
 
-    this.auth.uploadVideo(this.selectedFile).pipe(
+    this.videoService.uploadVideo(this.selectedFile).pipe(
       tap(() => {
-        // Reset state
-        this.selectedFile = null;
-        // Optional: clear the actual input DOM element if you view-child it, 
-        // but for now we just alert and refresh.
         alert('Upload Successful');
-        this.refreshTrigger$.next(); 
+        this.selectedFile = null;
+        if(this.fileInput) this.fileInput.nativeElement.value = ''; 
       }),
       catchError(err => {
         alert('Upload Failed');
@@ -114,11 +128,7 @@ export class AdminDashboardComponent {
 
   onDelete(url: string) {
     if (!confirm('Are you sure you want to delete this file?')) return;
-
-    this.auth.deleteVideo(url).pipe(
-      tap(() => {
-        this.refreshTrigger$.next(); 
-      }),
+    this.videoService.deleteVideo(url).pipe(
       catchError(err => {
         alert('Delete Failed');
         return of(null);
@@ -127,6 +137,11 @@ export class AdminDashboardComponent {
   }
 
   getFilename(url: string): string {
-    return url.substring(url.lastIndexOf('/') + 1);
+    return url.split('/').pop() || '';
+  }
+
+  logout() {
+    this.auth.logout();      
+    this.router.navigate(['/login']);
   }
 }
