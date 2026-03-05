@@ -11,6 +11,14 @@
       margin-bottom: 40px;
     }
 
+.btn-primary:hover .icon-cloud {
+  fill: #E0F2FE; 
+}
+
+.icon-cloud {
+  fill: #ffffff;
+  cursor:auto;
+}
     .header h1 {
       font-size: 2.5rem;
       margin-bottom: 8px;
@@ -295,6 +303,11 @@
       transition: background 0.15s;
     }
 
+    .file-icon{
+
+      cursor:initial;
+    }
+
     .video-item:hover { background: #f9fafb; }
     .video-item:last-child { border-bottom: none; }
 
@@ -305,8 +318,7 @@
     }
 
     .filename {
-      font-family: 'Courier New', monospace;
-      font-size: 0.9rem;
+      font-size: 1.3rem;
     }
 
     .btn {
@@ -324,6 +336,7 @@
     .btn-primary {
       background: #3b82f6;
       color: white;
+      margin-bottom: 15px;
     }
 
     .btn-primary:hover:not(:disabled) {
@@ -355,6 +368,7 @@
       background: transparent;
       font-size: 1rem;
       text-decoration: none;
+      flex-direction: column;
     }
 
     .view:hover { background: #dbeafe; }
@@ -386,4 +400,35 @@
 
     .error-card h3 { color: #ef4444; margin: 10px 0; }
     .lock-icon { font-size: 3rem; }
+
+.icon {
+  width: 24px;
+  height: 24px;
+  fill: #555555;
+  cursor:pointer;
+  margin: 0 8px;
+  transition: transform 0.2s ease, fill 0.2s ease;
+}
+
+.file-label:hover .icon-folder-open {
+  fill: #FFC107; 
+  transform: scale(1.15);
+}
+
+.icon:hover:not(.icon-clapperboard-open) {
+  transform: scale(1.15);
+}
+.icon-clapperboard-open{
+  cursor: initial;
+}
+
+.btn-icon:hover .icon-play{
+  fill: #4CAF50; 
+    transform: scale(1.15);
+}
+
+.btn-icon:hover .icon-trash{
+  fill: #F44336; 
+    transform: scale(1.15);
+}
 

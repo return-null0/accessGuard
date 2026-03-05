@@ -33,7 +33,10 @@ import { Router } from '@angular/router';
             <div class="file-input-wrapper">
               <input type="file" (change)="onFileSelected($event)" #fileInput id="file-upload" class="hidden-input">
               <label for="file-upload" class="file-label">
-                <span class="folder-icon">📂</span>
+                <span class="folder-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon icon-folder-open">
+  <path d="M4 4h6l2 2h8a2 2 0 0 1 2 2v4H3.8l-1.3 5H2V6a2 2 0 0 1 2-2z" />
+  <path d="M22.5 10H4.5l-2 10h18l2-10z" />
+</svg></span>
                 <span *ngIf="!selectedFile">Choose File...</span>
                 <span *ngIf="selectedFile" class="selected-name">{{ selectedFile.name }}</span>
               </label>
@@ -42,7 +45,9 @@ import { Router } from '@angular/router';
             <button (click)="onUpload()" 
                     [disabled]="!selectedFile" 
                     class="btn btn-primary">
-              <span class="icon">☁️</span> Upload Video
+              <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon-cloud">
+  <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+</svg></span> Upload Video
             </button>
           </div>
         </section>
@@ -63,13 +68,20 @@ import { Router } from '@angular/router';
 
             <div *ngFor="let videoUrl of videoService.videos$ | async" class="video-item">
               <div class="file-info">
-                <span class="file-icon">🎬</span>
+                <span class="file-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon icon-clapperboard-open">
+  <path d="M4 10h16v10c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V10z" />
+  <path d="M21 8.5L4 3 3 6l17 5.5z" />
+</svg></span>
                 <span class="filename" title="{{ videoUrl }}">{{ getFilename(videoUrl) }}</span>
               </div>
               
               <div class="actions">
-                <a [href]="videoUrl" target="_blank" class="btn-icon view" title="View">▶️</a>
-                <button (click)="onDelete(videoUrl)" class="btn-icon delete" title="Delete">🗑️</button>
+                <a [href]="videoUrl" target="_blank" class="btn-icon view" title="View"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon icon-play">
+  <path d="M8 5v14l11-7z" />
+</svg> </a>
+                <button (click)="onDelete(videoUrl)" class="btn-icon delete" title="Delete"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon icon-trash">
+  <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+</svg></button>
               </div>
             </div>
             
