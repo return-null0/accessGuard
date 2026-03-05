@@ -18,7 +18,7 @@ The system is fully containerized using Docker, mapping a local directory on you
 <img src="./readme/image2.png" alt="drawing" width="500"/>
 <img src="./readme/image3.png" alt="drawing" width="500"/>
 <img src="./readme/image4.png" alt="drawing" width="500"/>
-<img src="./readme/image5.png" alt="drawing" width="500"/>
+
 
 -----
 ## Key Features
